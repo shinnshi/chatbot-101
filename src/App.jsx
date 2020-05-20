@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './assets/styles/index.css'
 import defaultDataset from "./dataset"
 import './assets/styles/style.css'
-import { AnswersList, Chats } from './compoents/index'
+import { AnswersList, Chats, FormDialog } from './compoents/index'
 
 export default class App extends Component {
   constructor(props) {
@@ -14,8 +14,17 @@ export default class App extends Component {
       dataset: defaultDataset,
       open: false
     }
+    this.handleClose = this.handleClose.bind(this)
+    this.handleClickOpen = this.handleClickOpen.bind(this)
     this.selectAnswer = this.selectAnswer.bind(this)
   }
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
   displayNextQuestion = (nextQuestionId) => {
     const chats = this.state.chats
     chats.push({
@@ -33,6 +42,9 @@ export default class App extends Component {
     switch (true) {
       case (nextQuestionId === 'init'):
         this.displayNextQuestion(nextQuestionId)
+        break;
+      case (nextQuestionId === 'contact'):
+        this.handleClickOpen()
         break;
       case (/^https:*/.test(nextQuestionId)):
         const a = document.createElement('a')
@@ -72,6 +84,7 @@ export default class App extends Component {
         <div className="c-box">
           <Chats chats={this.state.chats} />
           <AnswersList answers={this.state.answers} select={this.selectAnswer} />
+          <FormDialog open={this.state.open} HandleClose={this.handleClose} />
         </div>
       </section>
     )
